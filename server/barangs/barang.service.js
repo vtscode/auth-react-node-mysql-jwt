@@ -1,4 +1,5 @@
 ﻿const db = require('_helpers/db');
+const { Op } = require("sequelize");
 
 module.exports = {
     getAll,
@@ -8,14 +9,31 @@ module.exports = {
     delete: _delete
 };
 
-async function getAll() {
+async function getAll(req) {
+  // searching query for nama atau merk barang
+  if(req.query.search){
+    const data = await db.Barang.findAll({where : {
+      [Op.or]: [
+        {
+          nama: {
+            [Op.like]: `%${req.query.search}%`
+          }
+        },
+        {
+          merk: {
+            [Op.like]: `%${req.query.search}%`
+          }
+        }
+      ]
+    } })
+    return data;
+  }
   return await db.Barang.findAll();
 }
 
 async function getById(id) {
   return await getBarang(id);
 }
-
 async function create(params) {
     // validate
     if (await db.Barang.findOne({ where: { nama: params.nama, merk : params.merk } })) {

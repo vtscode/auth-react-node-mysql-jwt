@@ -30,7 +30,7 @@ function create(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    objService.getAll()
+    objService.getAll(req)
         .then(data => res.json(data))
         .catch(next);
 }

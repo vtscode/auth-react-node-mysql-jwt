@@ -1,12 +1,16 @@
 /* eslint-disable */
 import React from 'react';
-import { InputForm,Notif } from "components";
 import pathName from "routes/pathName";
 import { useCustomReducer } from "hooks";
 import BaseLayout from "../../frame/Base";
 import { titleNameByPathUrl } from "utils";
+import { InputForm,Notif } from "components";
 import { randomString } from "utils/generate";
-import { PlusOutlined,EditOutlined,DeleteOutlined } from "@ant-design/icons";
+import { 
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  SearchOutlined  } from "@ant-design/icons";
 import Network,{cancelToken} from "services/network";
 
 import { Table, Input, InputNumber, Popconfirm, 
@@ -63,7 +67,11 @@ export default (props) => {
     data : [],
     dataCreate : {
       visible : false,
-      loading: false
+      loading: false,
+      detailVisible : false,
+      detail : {
+
+      }
     },
     stateTable :{}
   }
@@ -101,6 +109,10 @@ export default (props) => {
     }
   };
 
+  const showDisplay = (record) => {
+    reducerFunc('dataCreate',{detailVisible : true, detail : record});
+  }
+
   const columns = [
     {
       title: 'Nama',
@@ -108,6 +120,7 @@ export default (props) => {
       dataIndex: 'nama',
       width: '25%',
       editable: true,
+      render : (x,record) => <Button type="text" onClick={() => showDisplay(record)} danger>{x}</Button>      
     },
     {
       title: 'Merk',
@@ -225,6 +238,15 @@ export default (props) => {
     }
   }
 
+  const handleSearch = async val => {
+    try {
+      const resp = await Network.get(`${pathName.pages.barang}s?search=${val}`)
+      reducerFunc('data',resp,'conventional')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   React.useEffect(() => {
     fetchData();
     return () => cancelToken;
@@ -233,11 +255,14 @@ export default (props) => {
   return(
     <BaseLayout {...contentProps}>
       <Row justify="end">
-        <Button 
-          type="primary" 
-          onClick={() => reducerFunc('dataCreate',{visible:true})} 
-          icon={<PlusOutlined />} shape="round"
-        >Create</Button>
+        <Space>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />}
+            onClick={() => reducerFunc('dataCreate',{visible:true})} 
+          >Create</Button>
+          <Input.Search loading allowClear onSearch={handleSearch} placeholder="Search by name" />
+        </Space>
       </Row>
       <Form form={form} component={false}>
         <Table
@@ -263,6 +288,20 @@ export default (props) => {
           <Form form={formModal} onFinish={createData}>
             <InputForm inputs={inputs} />
           </Form>
+        </Card>
+      </Modal>
+      <Modal 
+        visible={dataReducer.dataCreate.detailVisible}
+        onCancel={() => reducerFunc('dataCreate',{detailVisible : false})}
+        footer={null}
+      >
+        <Card
+          title={dataReducer.dataCreate.detail.nama}
+        >
+          <strong>{dataReducer.dataCreate.detail.merk}</strong>
+          <p>
+          {dataReducer.dataCreate.detail.keterangan}
+          </p>
         </Card>
       </Modal>
     </BaseLayout>
