@@ -9,7 +9,7 @@ import localStorageService from "services/localStorageService";
 
 const ProtectedRoute = ({history}) => {
   const { login} = pathName;
-  if(!localStorageService('auth').getAccessToken()?.user){
+  if(!localStorageService('auth').getAccessToken()){
     history.replace(login);
   }
   return(

@@ -4,7 +4,7 @@ import { Layout } from "antd";
 import Header from './Header';
 import Footer from './Footer';
 import Sidebar from './Siderbar';
-import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import pathName from "routes/pathName";

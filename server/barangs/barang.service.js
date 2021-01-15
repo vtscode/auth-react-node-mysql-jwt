@@ -19,35 +19,32 @@ async function getById(id) {
 async function create(params) {
     // validate
     if (await db.Barang.findOne({ where: { nama: params.nama, merk : params.merk } })) {
-      throw `Merk atau nama : ${params.merk} | ${params.nama} sudah ada`;
+      return {data : `Merk atau nama : ${params.merk} | ${params.nama} sudah ada`};
     }
 
     // save
     await db.Barang.create(params);
+    return {data : 'Created successfully'};
 }
 
 async function update(id, params) {
     const obj = await getBarang(id);
-
-    // validate
-    if (await db.Barang.findOne({ where: { nama: params.nama, merk : params.merk } })) {
-        throw `Merk atau nama : ${params.merk} | ${params.nama} sudah ada`;
-    }
-
     // copy params to user and save
     Object.assign(obj, params);
     await obj.save();
+    return {data : 'Updated successfully'};
 }
 
 async function _delete(id) {
     const obj = await getBarang(id);
     await obj.destroy();
+    return {data : 'Deleted successfully'};
 }
 
 // helper functions
 
 async function getBarang(id) {
     const obj = await db.Barang.findByPk(id);
-    if (!obj) throw 'Barang tidak ada';
+    if (!obj) return {data : 'Barang tidak ada'};
     return obj;
 }

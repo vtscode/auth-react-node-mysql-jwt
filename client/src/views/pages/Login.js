@@ -8,33 +8,27 @@ import { setAuth } from "redux/auth/action";
 import InputForm from "components/InputForm";
 import { Layout,Form,Card, Image } from "antd";
 import localStorageService from "services/localStorageService";
+import { Link } from 'react-router-dom';
 
-const adminUserName = ['riventus'];
 const Login = (props) => {
-  const { loggedIn } = props;
   const [form] = Form.useForm();
   const { endpoint,home } = pathName;
   const [process,setprocess] = React.useState({loading : false, disabled : false });
 
   const handleSubmit = async (e) => {
     setprocess({ loading : true, disabled : true });
-    let loginpath;
+    let loginpath = endpoint.login;
     try {
-      const values = await form.validateFields();
-      if(adminUserName.includes(values.identifier)){
-        loginpath = endpoint.loginAdmin;
-      }else{
-        loginpath = endpoint.login;
-      }
-      const resp = await network.post(loginpath,values);
+      await form.validateFields();
+      const resp = await network.post(loginpath,'',e);
+      
       if(resp){
-        await loggedIn(resp);
+        await props.loggedIn(resp);
         if(localStorageService('historypath').getAccessToken()){
-          console.log(localStorageService('historypath').getAccessToken());
-          props.history.replace(localStorageService('historypath').getAccessToken());
+          setTimeout(() => props.history.replace(localStorageService('historypath').getAccessToken()),500)
         }else{
-          // console.log('home');
-          props.history.replace(home);
+          setTimeout(() => props.history.replace(home),500)
+          ;
         }
       }
       setprocess({ loading : false, disabled : false });
@@ -46,14 +40,14 @@ const Login = (props) => {
 
   const inputs = [
     { propsFormItem : { 
-      name : 'identifier', rules: [{required : true, message : 'Username harus diisi'}] }, propsInput : { placeholder : 'Username', autoFocus: true} },
+      name : 'username', rules: [{required : true, message : 'Username harus diisi'}] }, propsInput : { placeholder : 'Username', autoFocus: true} },
     { type : 'password', propsFormItem : { 
       name : 'password', rules: [{required : true, message : 'Password harus diisi'}] }, propsInput : { placeholder : 'Password'} },
-    { type : 'button', text : 'Login', propsBtn : { ...process, type: 'primary', htmlType : 'submit', block:true,} },
+    { type : 'button', text : 'Login', propsBtn : { ...process, type: 'primary', htmlType : 'submit', block:true } },
   ];
 
   React.useEffect(() => {
-    if(localStorageService('auth').getAccessToken()?.user){
+    if(localStorageService('auth').getAccessToken()){
       if(localStorageService('historypath').getAccessToken()){
         props.history.replace(localStorageService('historypath').getAccessToken());
       }else{
@@ -69,9 +63,13 @@ const Login = (props) => {
           <Image src={noImagePath} alt="nothing" />
           <h1>Login Pages</h1>
         </center>
-        <Form form={form} onFinish={handleSubmit} initialValues={{identifier: 'riventus',password : 'qweqwe123'}}>
+        <Form form={form} onFinish={handleSubmit} initialValues={{username: 'riventus',password : 'password'}}>
           <InputForm inputs={inputs} />
         </Form>
+        <br/>
+        <center>
+          <Link to={pathName.register}>Register</Link>
+        </center>
       </Card>
     </Layout.Content>
   )

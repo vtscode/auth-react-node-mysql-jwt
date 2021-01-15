@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-const initURL = process.env.REACT_APP_BASE_URL;
+const initURL = process.env.REACT_APP_API_URL;
 const initialEndpoint = '/admin';
 const defaultPathDomain = initURL+initialEndpoint;
 const noImagePath = 'assets/logo.svg';

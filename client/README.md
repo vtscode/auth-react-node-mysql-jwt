@@ -1,15 +1,12 @@
 # Dashboard application
 
-Created by reactjs with [strapi](https://strapi.io/documentation/v3.x/getting-started/introduction.html) application 
-
-### Install Strapi
-```sh
-yarn install
-yarn develop
-```
+### Install
 
 ### Install Dashboard App
-### `yarn start`
+```sh
+yarn install
+yarn start
+```
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.

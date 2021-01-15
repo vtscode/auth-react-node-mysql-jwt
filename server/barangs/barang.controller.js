@@ -25,7 +25,7 @@ function createSchema(req, res, next) {
 
 function create(req, res, next) {
     objService.create(req.body)
-        .then(() => res.json({ message: 'Created successfully' }))
+        .then((data) => res.json({ ...data, message: 'Created successfully' }))
         .catch(next);
 }
 
@@ -52,12 +52,12 @@ function updateSchema(req, res, next) {
 
 function update(req, res, next) {
     objService.update(req.params.id, req.body)
-        .then(() => res.json({ message: 'Updated successfully' }))
+        .then((data) => res.json({ ...data,message: 'Updated successfully' }))
         .catch(next);
 }
 
 function _delete(req, res, next) {
     objService.delete(req.params.id)
-        .then(() => res.json({ message: 'Deleted successfully' }))
+        .then((data) => res.json({ ...data, message: 'Deleted successfully' }))
         .catch(next);
 }

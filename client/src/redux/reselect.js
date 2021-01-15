@@ -5,7 +5,7 @@ const authSelector = state => state.auth;
 
 const getAuth = createSelector(
   authSelector,
-  auth => auth.user
+  auth => auth
 );
 const getTheme = createSelector(
   stateGlobal,
