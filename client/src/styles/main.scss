@@ -1,0 +1,10 @@
+// Variables and function
+@import "./variables/index.scss";
+@import "./mixins/index.scss";
+
+// antd custom scss
+@import "./components/antd.custom.scss";
+
+// Pages
+@import "./pages/login.scss";
+@import "./pages/base.scss";

@@ -1,0 +1,16 @@
+.login__card{
+  width: 40%;
+  padding: 0 7em;
+  position: relative;
+  top: 10em;
+  margin: 0 auto;
+  
+  @media only screen and (max-width: 1300px){
+    width: 80%;
+    padding: 0 5em;
+  }
+  @media only screen and (max-width: 600px){
+    width: 100%;
+    padding: unset;
+  }
+}

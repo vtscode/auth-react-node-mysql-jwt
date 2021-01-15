@@ -1,0 +1,10 @@
+.contenpage__header{ 
+  height: 80vh;
+  overflow:scroll;
+  background: $color-white;
+}
+.loading__fallback{
+  position: fixed;
+  right:0;left:0;
+  top:50%;
+}
