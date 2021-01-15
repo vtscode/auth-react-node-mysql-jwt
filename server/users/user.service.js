@@ -12,78 +12,82 @@ module.exports = {
     delete: _delete
 };
 
-async function authenticate({ username, password }) {
-    const user = await db.User.scope('withHash').findOne({ where: { username } });
+async function authenticate({ username, password },res) {
+  const user = await db.User.scope('withHash').findOne({ where: { username } });
+  
+  if(!user) {
+    res.status(404).json({ error: 'User Not found' })
+  }
 
-    if(!user)
-      throw "User Not Found";
+  if (!(await bcrypt.compare(password, user.password))) {
+    res.status(400).json({ error: 'Password is incorrect' })
+  }
 
-    if (!(await bcrypt.compare(password, user.password)))
-        throw 'Password is incorrect';
-
-    // authentication successful
-    const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
-    return { ...omitHash(user.get()), token };
+  // authentication successful
+  const token = jwt.sign({ sub: user.id }, config.secret, { expiresIn: '7d' });
+  return { ...omitHash(user.get()), token };
 }
 
 async function getAll() {
     return await db.User.findAll();
 }
 
-async function getById(id) {
-    return await getUser(id);
+async function getById(id,res) {
+    return await getUser(id,res);
 }
 
-async function create(params) {
-    // validate
-    if (await db.User.findOne({ where: { username: params.username } })) {
-        throw `Username : ${params.username} is already taken`;
-    }
+async function create(params,res) {
+  // validate
+  if (await db.User.findOne({ where: { username: params.username } })) {
+    res.status(400).json({ error: `Username : ${params.username} is already taken` })
+  }
 
-    // hash password
-    if (params.password) {
-        params.password = await bcrypt.hash(params.password, 10);
-    }
+  // hash password
+  if (params.password) {
+      params.password = await bcrypt.hash(params.password, 10);
+  }
 
-    // save user
-    await db.User.create(params);
+  // save user
+  await db.User.create(params);
 }
 
-async function update(id, params) {
-    const user = await getUser(id);
+async function update(id, params,res) {
+  const user = await getUser(id);
 
-    // validate
-    const usernameChanged = params.username && user.username !== params.username;
-    if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
-        throw 'Username "' + params.username + '" is already taken';
-    }
+  // validate
+  const usernameChanged = params.username && user.username !== params.username;
+  if (usernameChanged && await db.User.findOne({ where: { username: params.username } })) {
+    res.status(400).json({ error: `Username : ${params.username} is already taken` })
+  }
 
-    // hash password if it was entered
-    if (params.password) {
-        params.password = await bcrypt.hash(params.password, 10);
-    }
+  // hash password if it was entered
+  if (params.password) {
+      params.password = await bcrypt.hash(params.password, 10);
+  }
 
-    // copy params to user and save
-    Object.assign(user, params);
-    await user.save();
+  // copy params to user and save
+  Object.assign(user, params);
+  await user.save();
 
-    return omitHash(user.get());
+  return omitHash(user.get());
 }
 
-async function _delete(id) {
-    const user = await getUser(id);
-    await user.destroy();
+async function _delete(id,res) {
+  const user = await getUser(id,res);
+  await user.destroy();
 }
 
 // helper functions
 
-async function getUser(id) {
-    const user = await db.User.findByPk(id);
-    if (!user) throw 'User not found';
-    return user;
+async function getUser(id,res) {
+  const user = await db.User.findByPk(id);
+  if (!user) {
+    res.status(404).json({ error: 'User Not found' })
+  }
+  return user;
 }
 
 function omitHash(user) {
-    const { password, ...userWithoutHash } = user;
-    return userWithoutHash;
+  const { password, ...userWithoutHash } = user;
+  return userWithoutHash;
 }

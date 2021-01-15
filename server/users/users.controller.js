@@ -25,8 +25,10 @@ function authenticateSchema(req, res, next) {
 }
 
 function authenticate(req, res, next) {
-    userService.authenticate(req.body)
-        .then(user => res.json(user))
+    userService.authenticate(req.body,res)
+        .then((user) => {
+          res.json(user)
+        })
         .catch(next);
 }
 
@@ -41,7 +43,7 @@ function createSchema(req, res, next) {
 }
 
 function create(req, res, next) {
-    userService.create(req.body)
+    userService.create(req.body,res)
         .then(() => res.json({ message: 'Registration successful' }))
         .catch(next);
 }
@@ -57,7 +59,7 @@ function getCurrent(req, res, next) {
 }
 
 function getById(req, res, next) {
-    userService.getById(req.params.id)
+    userService.getById(req.params.id,res)
         .then(user => res.json(user))
         .catch(next);
 }
@@ -73,13 +75,13 @@ function updateSchema(req, res, next) {
 }
 
 function update(req, res, next) {
-    userService.update(req.params.id, req.body)
+    userService.update(req.params.id, req.body,res)
         .then(user => res.json(user))
         .catch(next);
 }
 
 function _delete(req, res, next) {
-    userService.delete(req.params.id)
+    userService.delete(req.params.id,res)
         .then(() => res.json({ message: 'User deleted successfully' }))
         .catch(next);
 }

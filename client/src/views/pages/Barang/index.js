@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { InputForm,Notif } from "components";
 import pathName from "routes/pathName";
@@ -98,25 +99,6 @@ export default (props) => {
       Notif({type : 'error' , response : { code : 'Error', message : "Error updated !" } })
       console.log(error);
     }
-    // try {
-    //   const row = await form.validateFields();
-      
-    //   const newData = [...dataReducer.data];
-    //   const index = newData.findIndex((item) => key === item.key);
-
-    //   if (index > -1) {
-    //     const item = newData[index];
-    //     newData.splice(index, 1, { ...item, ...row });
-    //     reducerFunc('data',newData,'conventional')
-    //     reducerFunc('editingKey','','conventional')
-    //   } else {
-    //     newData.push(row);
-    //     reducerFunc('data',newData,'conventional')
-    //     reducerFunc('editingKey','','conventional')
-    //   }
-    // } catch (errInfo) {
-    //   console.log('Validate Failed:', errInfo);
-    // }
   };
 
   const columns = [
