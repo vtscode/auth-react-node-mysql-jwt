@@ -4,7 +4,7 @@
         "port": 3306,
         "user": "root",
         "password": "",
-        "database": "cikaso_dev-react-20210115-riventus"
+        "database": "sample-auth-dashboard"
     },
     "secret": "secretstring for JWT TOKEN"
 }
